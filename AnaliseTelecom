@@ -1,0 +1,45 @@
+# 1 PASSO Importar a base de dados para o Python
+# 2 PASSO Visualizar essa base de dados
+# Entender as informações que tem disponivel
+# Descobrir as cagadas da base de dados
+# 3 PASSO Tratamento de dados
+# 4 PASSO Analise Global ou Inicial
+# 5 PASSO Analise detalhada (buscar a causa e a solução dos cancelamentos)
+import pandas as pd
+
+tabela = pd.read_csv("telecom_users.csv")
+
+#REMOVER COLUNA DA TABELA
+
+tabela = tabela.drop("Unnamed: 0", axis=1)#EXCLUIR UMA COLUNA  #EIXO =0 EXCLUI LINHA, EIXO =1 EXCLUI COLUNA
+display(tabela)
+
+----------------------------------------------------------------------------------------
+# 3 PASSO Tratamento de dados
+# Analisar se o python ta lendo as informações no formato correto
+# Sera que existe alguma coluna completamento vazia?
+# Sera que existe alguma infromação em alguma linha vazia?
+tabela["TotalGasto"] = pd.to_numeric(tabela["TotalGasto"], errors="coerce")
+
+tabela = tabela.dropna(how="all", axis=1)
+
+tabela = tabela.dropna(how="any", axis=0)
+print(tabela.info())
+---------------------------------------------------------------------------------------
+# 4 PASSO Analise Global ou Inicial
+# Quantos clientes cancelaram e quantos não cancelaram
+print(tabela["Churn"].value_counts())
+# 0 % de clientes que cancelaram e que não cancelaram
+print(tabela["Churn"].value_counts(normalize=True))
+
+---------------------------------------------------------------------------------------
+# 5 PASSO Analise detalhada (buscar a causa e a solução dos cancelamentos)
+import plotly.express as px
+# Criar grafico
+coluna = "MesesComoCliente"
+
+grafico = px.histogram(tabela, x=coluna, color="Churn")
+# Exibir o grafico
+grafico.show()
+
+-----------------------------------------------------------------------------------------
